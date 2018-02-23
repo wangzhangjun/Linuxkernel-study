@@ -11,7 +11,7 @@
 上面的代码表示，当内核版本为2.6.0时，可以使用LINUX_VERSION_26表示。定义好了上面的就可以像
 下面这样去使用
 ```
-#ifdef LINUX_VERSION_26
+#ifdef LINUX_VERSION_26(或者使用#ifndef：表示不是这个版本的时候)
     2.6上的函数
 #else
     非2.6上的函数

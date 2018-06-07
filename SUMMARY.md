@@ -10,6 +10,7 @@
     * [linux添加系统调用(编译内核)](technology/addsyscall.md)
     * [linux内核hashtable](technology/linux内核hashtable.md)
     * [linux使用LD_PRELOAD变量黑客](technology/linux使用LD_PRELOAD变量黑客.md)
+    * [ubuntu安装vmlinux查看内核调试信息](technology/ubuntu安装vmlinux查看内核调试信息.md)
 * [文件系统相关](filesystem/README.md)
 * [驱动程序相关](driver/README.md)
     * [tty](driver/tty.md)

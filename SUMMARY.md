@@ -15,6 +15,9 @@
     * [suse自定义安装源gcc](technology/suse自定义安装源gcc.md)
     * [内核调试各种打印](technology/内核调试各种打印.md)
 * [文件系统相关](filesystem/README.md)
+* [shell脚本](shell脚本/1-shell脚本入门.md)
+    * [shell脚本文本过滤](shell脚本/2-shell脚本文本过滤.md)
+    * [shell脚本例子积累](shell脚本/3-shell脚本例子积累.md)
 * [驱动程序相关](driver/README.md)
     * [tty](driver/tty.md)
 

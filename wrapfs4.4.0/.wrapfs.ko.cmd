@@ -1,0 +1,1 @@
+cmd_/home/vagrant/SecurityMeetUp/wrapfs/wrapfs.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/vagrant/SecurityMeetUp/wrapfs/wrapfs.ko /home/vagrant/SecurityMeetUp/wrapfs/wrapfs.o /home/vagrant/SecurityMeetUp/wrapfs/wrapfs.mod.o

@@ -1,0 +1,16 @@
+probe begin(3)
+{
+     printf("Hello World!\n")
+    // exit()
+}
+probe begin(2)
+{
+     printf("Hello World2!\n")
+    // exit()
+}
+probe begin(1)
+{
+     printf("Hello World3!\n")
+    // exit()
+}
+

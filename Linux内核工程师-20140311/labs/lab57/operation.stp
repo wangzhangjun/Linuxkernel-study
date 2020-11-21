@@ -1,0 +1,10 @@
+global x
+probe begin 
+{
+     x <<< $1 ; x <<< $2; x <<< $3
+}
+probe end
+{ 
+     printf(" avg %d = sum %d / count %d\n", @avg(x), @sum(x), @count(x))
+}
+

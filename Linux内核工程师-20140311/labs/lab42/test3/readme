@@ -1,0 +1,16 @@
+dd if=/dev/sda1  bs=4096  count=1  skip=0  | xxd | less  // read 0 block (1024 + 1024(sb) + 1024 + 1024)
+dd if=/dev/sda1  bs=4096  count=1  skip=32768  | xxd | less // read 32768 block (1024(sb) + 1024 + 1024 + 1024)
+dd if=/dev/sda1  bs=4096  count=1  skip=98304  | xxd | less // read 98304 block (1024(sb) + 1024 + 1024 + 1024)
+dd if=/dev/sda1  bs=4096  count=1  skip=163840  | xxd | less // read 163840  block (1024(sb) + 1024 + 1024 + 1024)
+dd if=/dev/sda1  bs=4096  count=1  skip=229376  | xxd | less // read 229376  block (1024(sb) + 1024 + 1024 + 1024)
+dd if=/dev/sda1  bs=4096  count=1  skip=294912  | xxd | less // read 294912  block (1024(sb) + 1024 + 1024 + 1024)
+dd if=/dev/sda1  bs=4096  count=1  skip=884736  | xxd | less // read 884736  block (1024(sb) + 1024 + 1024 + 1024)
+dd if=/dev/sda1  bs=4096  count=1  skip=1605632  | xxd | less // read 1605632  block (1024(sb) + 1024 + 1024 + 1024)
+dd if=/dev/sda1  bs=4096  count=1  skip=2654208  | xxd | less // read 2654208  block (1024(sb) + 1024 + 1024 + 1024)
+dd if=/dev/sda1  bs=4096  count=1  skip=4096000  | xxd | less // read 4096000  block (1024(sb) + 1024 + 1024 + 1024)
+dd if=/dev/sda1  bs=4096  count=1  skip=962624  | xxd | less // read 962624  block (1024(sb) + 1024 + 1024 + 1024)
+
+
+0 1 3 5 7 9 25 27 49 81 125  
+
+dd if=/dev/sda1  bs=4096  count=1  skip=1  | xxd | less // read group descrp

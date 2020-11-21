@@ -1,0 +1,1 @@
+cmd_/root/workspace/labs/lab3/lab3.ko.unsigned := ld -r -m elf_i386 -T /usr/src/kernels/2.6.32-279.19.1.el6.i686/scripts/module-common.lds --build-id -o /root/workspace/labs/lab3/lab3.ko.unsigned /root/workspace/labs/lab3/lab3.o /root/workspace/labs/lab3/lab3.mod.o 

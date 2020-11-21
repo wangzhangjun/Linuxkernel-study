@@ -1,0 +1,46 @@
+	.file	"lab31.c"
+	.text
+	.p2align 4,,15
+.globl test
+	.type	test, @function
+test:
+	pushl	%ebp
+	movl	%esp, %ebp
+	movl	8(%ebp), %eax
+	movl	$1, ready
+	popl	%ebp
+	movl	$50, buf(,%eax,4)
+	ret
+	.size	test, .-test
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC0:
+	.string	"before buf[%d] = %d\n"
+.LC1:
+	.string	"after buf[%d] = %d\n"
+	.text
+	.p2align 4,,15
+.globl main
+	.type	main, @function
+main:
+	pushl	%ebp
+	movl	%esp, %ebp
+	andl	$-16, %esp
+	subl	$16, %esp
+	movl	buf+40, %eax
+	movl	$10, 4(%esp)
+	movl	$.LC0, (%esp)
+	movl	%eax, 8(%esp)
+	call	printf
+	movl	$50, 8(%esp)
+	movl	$10, 4(%esp)
+	movl	$.LC1, (%esp)
+	movl	$50, buf+40
+	movl	$1, ready
+	call	printf
+	leave
+	ret
+	.size	main, .-main
+	.comm	ready,4,4
+	.comm	buf,400,32
+	.ident	"GCC: (GNU) 4.4.6 20120305 (Red Hat 4.4.6-4)"
+	.section	.note.GNU-stack,"",@progbits

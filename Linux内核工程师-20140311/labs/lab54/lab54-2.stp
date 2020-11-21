@@ -1,0 +1,41 @@
+#! /usr/bin/env stap
+%{
+	#include <linux/netdevice.h>
+	#include <linux/skbuff.h>
+	#include <linux/string.h>
+%}
+
+
+function getname:string(field:long)
+%{
+	struct sk_buff *skb;
+	struct net_device *dev,*dev2;
+	int p,*h,irq;
+	 int  mem_start = 0,base_addr =0,mem_end = 0i,end_tail_len = 0;
+	char *name;
+	char buf[240];
+	int head_len = 0,data_len = 0;	
+//	p = (int)(THIS->field);
+//	skb = (struct sk_buff *)p;
+	 skb = (struct sk_buff *)((long)THIS->field); 
+	dev = (struct net_device *)(skb->dev);
+	irq = dev->irq;
+	name =(char *)(dev->name);
+	base_addr = (dev->base_addr);
+	mem_start = (dev->mem_start);
+	mem_end = dev->mem_end;
+	head_len = skb->data - skb->head;
+	data_len = skb->tail - skb->data;
+	end_tail_len = skb->end-skb->tail;
+       // h = skb->head;
+       	
+
+	//sprintf(buf,"receive: dev =  %s, skb->len = %d,skb->data_len = %d,skb->mac_len = %d , head_len = %d,data_len = %d,irq = %d,end_tail_len = %d\n",name,skb->len,skb->data_len,skb->mac_len,head_len,data_len,irq,end_tail_len);
+	sprintf(buf,"receive: dev = %s,head = 0x%p,data = 0x%p,tail = 0x%p,end = 0x%p,mac_a = 0x%p,network_a =0x%p,transport_p = 0x%p,mtu = %d\n",name,skb->head,skb->data,skb->tail,skb->end,skb->mac_header,skb->network_header,skb->transport_header,dev->mtu);
+	strncpy(THIS->__retvalue,buf,240);
+%}
+
+probe module("e1000").function("e1000_change_mtu")
+{
+	printf("%s\n","e1000_change_mtu");
+}

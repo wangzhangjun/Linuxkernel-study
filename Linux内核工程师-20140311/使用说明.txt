@@ -1,0 +1,5 @@
+1）Foundation是基础性内核试验
+2）lab3至lab57为内核课程试验源码，均调试通过.
+3）linux-2.6.38.2.tar.bz2是内核源码
+4）xen-patches-2.6.38-2.tar.bz2是一个Patch例子
+5）pdf讲义Ppt讲义的电子版.

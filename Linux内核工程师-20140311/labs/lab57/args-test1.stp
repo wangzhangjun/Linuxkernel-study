@@ -1,0 +1,15 @@
+probe begin
+{
+     printf("BEGIN NOW !\n")
+     argstr1 = @1;
+     argstr2 = @2;
+     argint3 = $3;
+}
+
+probe timer.ms(1000)  #after 1000 seconds
+{
+     printf("argstr1 = %s, argstr2 = %s, argint3 = %d\n", argstr1, argstr2,argint3)
+     exit()
+}
+global argstr1, argstr2, argint3
+

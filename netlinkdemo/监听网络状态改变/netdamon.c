@@ -278,7 +278,7 @@ int main()
                 break;
             case RTM_NEWADDR:
             case RTM_DELADDR:
-                nl_netifaddr_handle(h);
+                nl_netifaddr_handle(h); //ip地址的改变
                 break;
             case RTM_NEWLINK:
             case RTM_DELLINK:

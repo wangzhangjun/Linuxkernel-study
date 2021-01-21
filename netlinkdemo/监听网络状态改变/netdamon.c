@@ -18,6 +18,39 @@ void parse_rtattr(struct rtattr **tb, int max, struct rtattr *attr, int len)
         }
     }
 }
+void nl_netroute_handle(struct nlmsghdr *nlh)
+{
+    /*
+    触发：
+    netstat -rn查看gateway
+    给main表添加一条gateway ：ip route add 192.168.2.0/24 via 10.211.55.1 table main
+    */
+    int len;
+    struct rtattr *tb[RTA_MAX + 1];
+    struct rtmsg *rt;
+    char tmp[256];
+    bzero(tb, sizeof(tb));
+    rt = NLMSG_DATA(nlh);
+    len = nlh->nlmsg_len - NLMSG_SPACE(sizeof(*rt));
+    parse_rtattr(tb, RTA_MAX, RTM_RTA(rt), len);
+    printf("%s: ", (nlh->nlmsg_type == RTM_NEWROUTE) ? "NEWROUT" : "DELROUT");
+    if (tb[RTA_DST] != NULL)
+    {
+        inet_ntop(rt->rtm_family, RTA_DATA(tb[RTA_DST]), tmp, sizeof(tmp));
+        printf("DST: %s ", tmp);
+    }
+    if (tb[RTA_SRC] != NULL)
+    {
+        inet_ntop(rt->rtm_family, RTA_DATA(tb[RTA_SRC]), tmp, sizeof(tmp));
+        printf("SRC: %s ", tmp);
+    }
+    if (tb[RTA_GATEWAY] != NULL)
+    {
+        inet_ntop(rt->rtm_family, RTA_DATA(tb[RTA_GATEWAY]), tmp, sizeof(tmp));
+        printf("GATEWAY: %s ", tmp);
+    }
+    printf("\n");
+}
 void nl_netifaddr_handle(struct nlmsghdr *nlh)
 {
     //RTM_NEWADDR, RTM_DELADDR, RTM_GETADDR
@@ -48,8 +81,8 @@ void nl_netifaddr_handle(struct nlmsghdr *nlh)
  IFA_ANYCAST     raw protocol address   anycast address
  IFA_CACHEINFO   struct ifa_cacheinfo   Address information.
  IFA_MULTICAST,
-__IFA_MAX,
-    */
+ __IFA_MAX,
+ */
 
     int len;
     struct rtattr *tb[IFA_MAX + 1];
@@ -275,6 +308,7 @@ int main()
                 break;
             case RTM_NEWROUTE:
             case RTM_DELROUTE:
+                nl_netroute_handle(h); //路由变化
                 break;
             case RTM_NEWADDR:
             case RTM_DELADDR:

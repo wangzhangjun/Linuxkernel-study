@@ -8,6 +8,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+//参考：https://www.cnblogs.com/wenqiang/p/6634447.html
+
 void parse_rtattr(struct rtattr **tb, int max, struct rtattr *attr, int len)
 {
     for (; RTA_OK(attr, len); attr = RTA_NEXT(attr, len))

@@ -90,12 +90,40 @@ Routing attributes（rtattr部分属性，rta_type）
 {
         unsigned short rta_len;
         unsigned short rta_type;  //这个type 就是上面enum 定义的类型
+        //Data follows 
 };
 
 //相关的宏，用来获取ifinfomsg后面的rtattr结构
 #define IFLA_RTA(r) ((struct rtattr *)(((char *)(r)) + NLMSG_ALIGN(sizeof(struct ifinfomsg))))
 IFLA_RTA(r) r为ifinfomsg的基地址，返回ifinfomsg后的第一个rtattr基地址
-IFLA_PAYLOAD(n) 此宏展开为NLMSG_PAYLOAD(nlh, sizeof（ifinfomsg）)，获取PAYLOAD的长度
+//此宏展开为NLMSG_PAYLOAD(nlh, sizeof（ifinfomsg）)，获取PAYLOAD的长度
+IFLA_PAYLOAD(n) 
+// 判断是否为合法的路由属性 
+#define RTA_OK(rta,len) ((len) >= (int)sizeof(struct rtattr) && \
+             (rta)->rta_len >= sizeof(struct rtattr) && \
+              (rta)->rta_len <= (len))
+int RTA_OK(struct rtattr *rta, int rtabuflen);
+
+//获取下一个rtattr的首地址
+#define RTA_NEXT(rta,attrlen)   ((attrlen) -= RTA_ALIGN((rta)->rta_len), \
+                  (struct rtattr*)(((char*)(rta)) + RTA_ALIGN((rta)->rta_len)))
+struct rtattr *RTA_NEXT(struct rtattr *rta, unsigned int rtabuflen);
+
+//返回加上 rtattr header的总长度
+#define RTA_LENGTH(len) (RTA_ALIGN(sizeof(struct rtattr)) + (len))
+unsigned int RTA_LENGTH(unsigned int length);
+
+//返回数据对齐的最小值
+#define RTA_SPACE(len)  RTA_ALIGN(RTA_LENGTH(len))
+unsigned int RTA_SPACE(unsigned int length);
+
+//返回属性数据部分首地址
+#define RTA_DATA(rta)   ((void*)(((char*)(rta)) + RTA_LENGTH(0)))
+void *RTA_DATA(struct rtattr *rta);
+
+//返回属性数据部分的长度
+#define RTA_PAYLOAD(rta) ((int)((rta)->rta_len) - RTA_LENGTH(0))
+unsigned int RTA_PAYLOAD(struct rtattr *rta);
 */
 
     int len;

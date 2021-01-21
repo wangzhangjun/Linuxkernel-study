@@ -310,7 +310,7 @@ int main()
                 break;
             case RTM_NEWROUTE:
             case RTM_DELROUTE:
-                nl_netroute_handle(h); //路由变化
+                nl_netroute_handle(h); //路由表中的路由变化
                 break;
             case RTM_NEWADDR:
             case RTM_DELADDR:

@@ -18,7 +18,60 @@ void parse_rtattr(struct rtattr **tb, int max, struct rtattr *attr, int len)
         }
     }
 }
+void nl_netifaddr_handle(struct nlmsghdr *nlh)
+{
+    //RTM_NEWADDR, RTM_DELADDR, RTM_GETADDR
+    //添加,删除或者接收一个和接口相关的IP地址的信息。
+    //这些消息含有一个ifaddrmsg类型的结构，紧跟在后面的是一系列的rtattr结构。
+    /*
+    struct ifaddrmsg {
+        unsigned char ifa_family;    
+        unsigned char ifa_prefixlen; 
+        unsigned char ifa_flags;     
+        unsigned char ifa_scope;     
+        int ifa_index;               
+    };
+    ifa_family: 地址类型（通常为AF_INET or AF_INET6)）
+    ifa_prefixlen: 地址的地址掩码长度，如果改地址定义在这个family
+    ifa_flags:
+    ifa_scope: 地址的作用域
+    ifa_index:  接口索引与接口地址关联
 
+            Attributes （rtattr部分属性，rta_type）
+ rta_type        value type             description
+ ─────────────────────────────────────────────────────────────
+ IFA_UNSPEC      -                      unspecified.
+ IFA_ADDRESS     raw protocol address   接口地址 interface address
+ IFA_LOCAL       raw protocol address   本地地址 local address
+ IFA_LABEL       asciiz string          接口名称 name of the interface
+ IFA_BROADCAST   raw protocol address   广播 broadcast address.
+ IFA_ANYCAST     raw protocol address   anycast address
+ IFA_CACHEINFO   struct ifa_cacheinfo   Address information.
+ IFA_MULTICAST,
+__IFA_MAX,
+    */
+
+    int len;
+    struct rtattr *tb[IFA_MAX + 1];
+    struct ifaddrmsg *ifaddr;
+    char tmp[256];
+    bzero(tb, sizeof(tb));
+
+    ifaddr = NLMSG_DATA(nlh);
+    len = nlh->nlmsg_len - NLMSG_SPACE(sizeof(*ifaddr));
+    parse_rtattr(tb, IFA_MAX, IFA_RTA(ifaddr), len);
+    printf("%s ", (nlh->nlmsg_type == RTM_NEWADDR) ? "NEWADDR" : "DELADDR");
+    if (tb[IFA_LABEL] != NULL)
+    {
+        printf("%s ", (char *)RTA_DATA(tb[IFA_LABEL]));
+    }
+    if (tb[IFA_ADDRESS] != NULL)
+    {
+        inet_ntop(ifaddr->ifa_family, RTA_DATA(tb[IFA_ADDRESS]), tmp, sizeof(tmp));
+        printf("%s ", tmp);
+    }
+    printf("\n");
+}
 void nliterfaceinfo_handle(struct nlmsghdr *nlh)
 {
     //RTM_NEWLINK, RTM_DELLINK, RTM_GETLINK
@@ -225,10 +278,11 @@ int main()
                 break;
             case RTM_NEWADDR:
             case RTM_DELADDR:
+                nl_netifaddr_handle(h);
                 break;
             case RTM_NEWLINK:
             case RTM_DELLINK:
-                nliterfaceinfo_handle(h);
+                nliterfaceinfo_handle(h); //interface的up或者down等
                 break;
             default:
                 break;

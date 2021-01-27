@@ -76,8 +76,9 @@ int do_route(int sock, int cmd, int flags, _inet_addr *dst, _inet_addr *gw, int 
     nl_request.n.nlmsg_flags = NLM_F_REQUEST | flags;
     nl_request.n.nlmsg_type = cmd;
     nl_request.r.rtm_family = dst->family;
-    nl_request.r.rtm_table = RT_TABLE_MAIN;
     nl_request.r.rtm_scope = RT_SCOPE_NOWHERE;
+    // nl_request.r.rtm_table = RT_TABLE_MAIN;
+    nl_request.r.rtm_table = RT_TABLE_UNSPEC;  //可以指定table，和下面的rtattr_add(&nl_request.n, sizeof(nl_request), RTA_TABLE, &route_table, sizeof(int));结合起来使用
 
     /* Set additional flags if NOT deleting route */
     if (cmd != RTM_DELROUTE) {
@@ -110,6 +111,8 @@ int do_route(int sock, int cmd, int flags, _inet_addr *dst, _inet_addr *gw, int 
         /* Set interface */
         rtattr_add(&nl_request.n, sizeof(nl_request), RTA_OIF, &if_idx, sizeof(int));
     }
+    int route_table = 200;
+    rtattr_add(&nl_request.n, sizeof(nl_request), RTA_TABLE, &route_table, sizeof(int));
 
     /* Send message to the netlink */
     return send(sock, &nl_request, sizeof(nl_request), 0);

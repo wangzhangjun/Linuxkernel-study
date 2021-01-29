@@ -1,21 +1,14 @@
 #include <linux/bpf.h>
+#include "bpf_helpers.h"
+#include <string.h>
+#include <errno.h>
 #define SEC(NAME) __attribute__((section(NAME), used))
 
-static int (*bpf_trace_printk)(const char *fmt, int fmt_size,
-                               ...) = (void *)BPF_FUNC_trace_printk;
-
-#define printt(fmt, ...)                                       \
-  ({                                                           \
-    char ____fmt[] = fmt;                                      \
-    bpf_trace_printk(____fmt, sizeof(____fmt), ##__VA_ARGS__); \
-  })
-
 struct bpf_map_def SEC("maps") my_map = {
-  .type = BPF_MAP_TYPE_HASH,
-  .key_size = siezof(int),
-  .value_size = sizeof(int),
-  .max_entries = 100
-};
+    .type = BPF_MAP_TYPE_HASH,
+    .key_size = sizeof(int),
+    .value_size = sizeof(int),
+    .max_entries = 100};
 
 SEC("tracepoint/syscalls/sys_enter_execve")
 int bpf_prog(void *ctx) {
@@ -23,11 +16,11 @@ int bpf_prog(void *ctx) {
   bpf_trace_printk(msg, sizeof(msg));
   int key, value, result;
   key = 1, value = 1234;
-  result = bpf_map_update_elem(&my_map, &key, &value, BPF_any);
+  result = bpf_map_update_elem(&my_map, &key, &value, BPF_ANY); //BPF_ANY元素存在，内核更新元素，不存在，则在映射中创建该元素，同理可以尝试BPF_NOEXIST和BPF_EXIST
   if(result == 0) {
     printt("update element success result:%d\n", result);
-  }else{
-    printt("failed to update element:%d (%s)\n", result, strerror(errno));
+  }else {
+    printt("failed to update element:%d\n", result);
   }
   return 0;
 }

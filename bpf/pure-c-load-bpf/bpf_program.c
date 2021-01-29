@@ -8,7 +8,8 @@ struct bpf_map_def SEC("maps") my_map = {
     .type = BPF_MAP_TYPE_HASH,
     .key_size = sizeof(int),
     .value_size = sizeof(int),
-    .max_entries = 100};
+    .max_entries = 100
+};
 
 SEC("tracepoint/syscalls/sys_enter_execve")
 int bpf_prog(void *ctx) {

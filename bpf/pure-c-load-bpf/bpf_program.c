@@ -14,6 +14,7 @@ SEC("tracepoint/syscalls/sys_enter_execve")
 int bpf_prog(void *ctx) {
   char msg[] = "Hello, BPF World!";
   bpf_trace_printk(msg, sizeof(msg));
+  
   int key, value, result;
   key = 1, value = 1234;
   result = bpf_map_update_elem(&my_map, &key, &value, BPF_ANY); //BPF_ANY元素存在，内核更新元素，不存在，则在映射中创建该元素，同理可以尝试BPF_NOEXIST和BPF_EXIST
@@ -22,6 +23,7 @@ int bpf_prog(void *ctx) {
   }else {
     printt("failed to update element:%d\n", result);
   }
+  
   return 0;
 }
 

@@ -36,6 +36,17 @@ int bpf_prog(void *ctx) {
     printt("kernel lookup element failed\n");
   }
 
+  //删除元素
+  int key_del=1;
+  result = bpf_map_delete_elem(&my_map, &key_del);
+  if (result == 0){
+    printt("kernel delete element success\n");
+  }
+  else
+  {
+    printt("kernel delete element failed\n");
+  }
+
   return 0;
 }
 

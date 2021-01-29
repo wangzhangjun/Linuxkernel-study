@@ -33,6 +33,16 @@ int main(int argc, char **argv)
     printf("userspace lookup element failed (%s)\n",strerror(errno));
   }
 
+  //删除元素--用户态
+  int key_del = 1;
+  result = bpf_map_delete_elem(map_data[0].fd, &key_del);
+  if (result == 0){
+    printf("userspace delete element success\n");
+  }
+  else{
+    printf("userspace delete element failed (%s)\n", strerror(errno));
+  }
+
   read_trace_pipe();
 
   return 0;

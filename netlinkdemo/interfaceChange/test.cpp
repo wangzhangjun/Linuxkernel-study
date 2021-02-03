@@ -11,6 +11,10 @@
 #include <dirent.h>
 #include <stdlib.h>
 
+/*
+运行：./a.out
+然后执行ifconfig eth0 down操作，观察相关的输出信息
+*/
 int interfaceIndex[1024] = {-1}; //所有interface index的缓存，记录，以判断是否是新创建的Index
 
 // little helper to parsing message using netlink macroses
@@ -93,7 +97,7 @@ int main()
     */
     // set groups we interested in
     /*
-    RTMGRP_LINK | RTMGRP_IPV4_IFADDR | RTMGRP_IPV4_ROUTE;   
+    RTMGRP_LINK | RTMGRP_IPV4_IFADDR | RTMGRP_IPV4_ROUTE;
     都是内核主动上报，是一个多播组，所以不需要sentomsg
     如果消息是发送给内核的，nl_groups为0
    */

@@ -10,6 +10,12 @@
 
 //参考：https://www.cnblogs.com/wenqiang/p/6634447.html
 
+/*
+网卡变化：ifconfig eth0 down
+路由变化：ip route add 192.168.2.0/24 via 10.211.55.1 table main
+新建网卡：sudo tunctl -b   ip link set tap0 up
+
+*/
 void parse_rtattr(struct rtattr **tb, int max, struct rtattr *attr, int len)
 {
     for (; RTA_OK(attr, len); attr = RTA_NEXT(attr, len))
@@ -60,11 +66,11 @@ void nl_netifaddr_handle(struct nlmsghdr *nlh)
     //这些消息含有一个ifaddrmsg类型的结构，紧跟在后面的是一系列的rtattr结构。
     /*
     struct ifaddrmsg {
-        unsigned char ifa_family;    
-        unsigned char ifa_prefixlen; 
-        unsigned char ifa_flags;     
-        unsigned char ifa_scope;     
-        int ifa_index;               
+        unsigned char ifa_family;
+        unsigned char ifa_prefixlen;
+        unsigned char ifa_flags;
+        unsigned char ifa_scope;
+        int ifa_index;
     };
     ifa_family: 地址类型（通常为AF_INET or AF_INET6)）
     ifa_prefixlen: 地址的地址掩码长度，如果改地址定义在这个family
@@ -112,27 +118,27 @@ void nliterfaceinfo_handle(struct nlmsghdr *nlh)
     //RTM_NEWLINK, RTM_DELLINK, RTM_GETLINK
     //创建或者删除一个特定的网络接口，或者从一个特定的网络接口上获得信息。
     //这些消息含有一个ifinfomsg类型的结构，紧跟在后面的是一系列的rtattr结构。
-    /* 
+    /*
     struct ifinfomsg
     {
-        unsigned char ifi_family; 
-        unsigned short ifi_type;  
-        int ifi_index;            
-        unsigned int ifi_flags;   
-        unsigned int ifi_change;  
-    }; 
-    
+        unsigned char ifi_family;
+        unsigned short ifi_type;
+        int ifi_index;
+        unsigned int ifi_flags;
+        unsigned int ifi_change;
+    };
+
     ifi_family: 接口地址类型
     ifi_type: 设备类型
     ifi_index: 是结构唯一的索引
     ifi_flags:  设备标志，可以看netdevice 结构
     ifi_change: 保留值，通常设置为0xFFFFFFFF
-    
+
 ifi_type代表硬件设备的类型：
 ARPHRD_ETHER                   10M以太网
 ARPHRD_PPP                     PPP拨号
 ARPHRDLOOPBACK                 环路设备
-     
+
 ifi_flags包含设备的一些标志：
      IFF_UP                            接口正在运行
      IFF_BROADCAST                     有效的广播地址集
@@ -149,7 +155,7 @@ ifi_flags包含设备的一些标志：
      IFF_MULTICAST                     支持组播(multicast)
      IFF_PORTSEL                       可以通过ifmap选择介质(media)类型
      IFF_AUTOMEDIA                     自动选择介质
-     IFF_DYNAMIC                       接口关闭时丢弃地址    
+     IFF_DYNAMIC                       接口关闭时丢弃地址
 
 Routing attributes（rtattr部分属性，rta_type）
  rta_type         value type         description
@@ -166,7 +172,7 @@ Routing attributes（rtattr部分属性，rta_type）
  IFLA_PRIORITY,
  IFLA_MASTER,
  IFLA_WIRELESS,
- IFLA_PROTINFO, 
+ IFLA_PROTINFO,
  IFLA_TXQLEN,
  IFLA_MAP,
  IFLA_WEIGHT,
@@ -178,15 +184,15 @@ Routing attributes（rtattr部分属性，rta_type）
 {
         unsigned short rta_len;
         unsigned short rta_type;  //这个type 就是上面enum 定义的类型
-        //Data follows 
+        //Data follows
 };
 
 //相关的宏，用来获取ifinfomsg后面的rtattr结构
 #define IFLA_RTA(r) ((struct rtattr *)(((char *)(r)) + NLMSG_ALIGN(sizeof(struct ifinfomsg))))
 IFLA_RTA(r) r为ifinfomsg的基地址，返回ifinfomsg后的第一个rtattr基地址
 //此宏展开为NLMSG_PAYLOAD(nlh, sizeof（ifinfomsg）)，获取PAYLOAD的长度
-IFLA_PAYLOAD(n) 
-// 判断是否为合法的路由属性 
+IFLA_PAYLOAD(n)
+// 判断是否为合法的路由属性
 #define RTA_OK(rta,len) ((len) >= (int)sizeof(struct rtattr) && \
              (rta)->rta_len >= sizeof(struct rtattr) && \
               (rta)->rta_len <= (len))

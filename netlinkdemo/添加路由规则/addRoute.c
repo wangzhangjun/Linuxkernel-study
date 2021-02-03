@@ -10,6 +10,17 @@
 
 //参考：https://blog.csdn.net/romainxie/article/details/8300443
 //参考：https://olegkutkov.me/2019/08/29/modifying-linux-network-routes-using-netlink/
+
+/*
+main表：
+ip route 查看列表
+./a.out add to 192.168.1.0 dev eth0
+
+自定义表（200）：
+ip route list table 200
+./a.out add to 192.168.2.0 dev eth0
+*/
+
 /* Open netlink socket */
 int open_netlink()
 {
@@ -76,8 +87,8 @@ int do_route(int sock, int cmd, int flags, _inet_addr *dst, _inet_addr *gw, int 
     nl_request.n.nlmsg_flags = NLM_F_REQUEST | flags;
     nl_request.n.nlmsg_type = cmd;
     nl_request.r.rtm_family = dst->family;
+    //nl_request.r.rtm_table = RT_TABLE_MAIN;//这个是直接在main表上操作
     nl_request.r.rtm_scope = RT_SCOPE_NOWHERE;
-    // nl_request.r.rtm_table = RT_TABLE_MAIN; //这个是直接在main表上操作
     nl_request.r.rtm_table = RT_TABLE_UNSPEC;  //可以指定table，和下面的rtattr_add(&nl_request.n, sizeof(nl_request), RTA_TABLE, &route_table, sizeof(int));结合起来使用
 
     /* Set additional flags if NOT deleting route */

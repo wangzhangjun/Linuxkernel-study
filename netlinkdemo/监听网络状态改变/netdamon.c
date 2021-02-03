@@ -11,9 +11,9 @@
 //参考：https://www.cnblogs.com/wenqiang/p/6634447.html
 
 /*
-网卡变化：ifconfig eth0 down
-路由变化：ip route add 192.168.2.0/24 via 10.211.55.1 table main
-新建网卡：sudo tunctl -b   ip link set tap0 up
+监听网卡变化：ifconfig eth0 down
+监听路由变化：ip route add 192.168.2.0/24 via 10.211.55.1 table main
+监听新建网卡：sudo tunctl -b   ip link set tap0 up
 
 */
 void parse_rtattr(struct rtattr **tb, int max, struct rtattr *attr, int len)

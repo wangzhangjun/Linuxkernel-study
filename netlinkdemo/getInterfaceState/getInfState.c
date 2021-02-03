@@ -12,6 +12,9 @@
 #include <netinet/if_ether.h>
 #include <netinet/ether.h>
 
+/*
+直接运行./a.out 列出所有的interface信息
+*/
 struct net_device_stats
 {
     unsigned long rx_packets;
